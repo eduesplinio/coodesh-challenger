@@ -1,178 +1,91 @@
 # QA Luma Store Automation
 
-Automação de testes end-to-end para a Luma Store usando Playwright e TypeScript.
-
 > This is a challenge by [Coodesh](https://coodesh.com/)
 
-## 📋 Sobre o Projeto
+Automação de testes end-to-end para a Luma Store usando Playwright e TypeScript.
 
-Este projeto implementa testes automatizados para validar funcionalidades críticas da Luma Store (https://demo.hyva.io), incluindo navegação, busca de produtos, gerenciamento de carrinho e processo de checkout.
+## Tecnologias
 
-## 🚀 Tecnologias Utilizadas
+- **Playwright** - Framework de automação
+- **TypeScript** - Linguagem
+- **ESLint + Prettier** - Qualidade de código
+- **Husky + lint-staged** - Git hooks
+- **GitHub Actions** - CI/CD
 
-- **[Playwright](https://playwright.dev/)** - Framework de automação de testes
-- **[TypeScript](https://www.typescriptlang.org/)** - Linguagem de programação
-- **[Node.js](https://nodejs.org/)** - Runtime JavaScript
-- **Page Object Model** - Padrão de design para organização dos testes
+## Por que Playwright?
 
-## 🎯 Por que Playwright?
+- Suporte multi-navegador (Chromium, Firefox, WebKit)
+- Auto-waiting inteligente (reduz flakiness)
+- Interceptação de rede nativa
+- TypeScript first-class
+- Execução paralela e rápida
+- Relatórios HTML e JUnit integrados
 
-### Vantagens do Playwright:
-
-1. **Suporte Multi-Navegador**: Testa em Chromium, Firefox e WebKit com uma única API
-2. **Auto-Waiting Inteligente**: Reduz flakiness com esperas automáticas para elementos
-3. **Interceptação de Rede**: Capacidade nativa de interceptar e monitorar requisições/respostas
-4. **Debugging Poderoso**: Playwright Inspector, trace viewer e screenshots automáticos
-5. **TypeScript First-Class**: Suporte completo com tipos fortes
-6. **Performance**: Execução rápida com paralelização nativa
-7. **Relatórios Integrados**: HTML reports e JUnit XML out-of-the-box
-
-### Comparação com outras ferramentas:
-
-**Selenium:**
-
-- ❌ Requer configuração manual de drivers
-- ❌ Waits explícitos necessários
-- ❌ Sem interceptação de rede nativa
-- ✅ Mais maduro e amplamente adotado
-
-**Cypress:**
-
-- ❌ Limitado ao navegador (sem Firefox/Safari real)
-- ❌ Não suporta múltiplas abas/janelas nativamente
-- ❌ Execução apenas no navegador
-- ✅ Excelente DX e debugging
-
-**Robot Framework:**
-
-- ❌ Sintaxe menos familiar para desenvolvedores
-- ❌ Menos performático
-- ✅ Ótimo para testes de aceitação com stakeholders não-técnicos
-
-## 📦 Instalação
+## Instalação
 
 ```bash
-# Instalar dependências
 npm install
-
-# Instalar navegadores do Playwright
 npx playwright install
 ```
 
-## 🧪 Execução dos Testes
+## Execução
 
 ```bash
-# Executar todos os testes
-npm test
-
-# Executar apenas testes obrigatórios
-npm test tests/required
-
-# Executar em modo headed (com interface)
-npm test -- --headed
-
-# Executar em navegador específico
-npm test -- --project=chromium
-
-# Executar teste específico
-npm test -- tests/required/home.spec.ts
-
-# Abrir relatório HTML
-npx playwright show-report
+npm test                              # Todos os testes
+npm test tests/required               # Apenas obrigatórios
+npm test -- --headed                  # Com interface
+npm test -- --project=chromium        # Navegador específico
+npm run test:report                   # Ver relatório HTML
 ```
 
-## 📁 Estrutura do Projeto
+## Qualidade de Código
+
+```bash
+npm run lint                          # ESLint + Prettier
+npm run format                        # Formatar código
+```
+
+## Estrutura
 
 ```
-.
-├── pages/                  # Page Objects
-│   ├── HomePage.ts
-│   ├── ProductPage.ts
-│   ├── CartPage.ts
-│   ├── CheckoutPage.ts
-│   └── AccountPage.ts
+├── pages/              # Page Objects
 ├── tests/
-│   ├── required/          # Testes obrigatórios
-│   │   ├── home.spec.ts
-│   │   ├── search.spec.ts
-│   │   ├── cart.spec.ts
-│   │   └── checkout.spec.ts
-│   └── optional/          # Testes diferenciais
-│       ├── advanced-search.spec.ts
-│       ├── account.spec.ts
-│       ├── random-product.spec.ts
-│       └── review.spec.ts
-├── utils/                 # Utilitários
-│   └── test-data.ts      # Gerador de dados de teste
-├── playwright.config.ts
-└── package.json
+│   ├── required/      # Testes obrigatórios
+│   └── optional/      # Testes diferenciais
+├── utils/             # Utilitários
+└── .github/workflows/ # CI/CD
 ```
 
-## ✅ Casos de Teste Implementados
+## Testes Implementados
 
-### Obrigatórios:
+**Obrigatórios:**
 
-- ✅ **Home Page**: Validação de carregamento (< 10s), título, menu, busca e categorias
-- ✅ **Search**: Busca por "shirt" com validação de resultados e estrutura de produtos
-- ✅ **Cart**: Adicionar produto ao carrinho com validação de contador e itens
-- ✅ **Checkout**: Fluxo completo com preenchimento de formulário e seleção de método de envio
+- Home Page (carregamento < 10s, navegação, busca)
+- Search (busca por "shirt" com validação)
+- Cart (adicionar produto e validar)
+- Checkout (fluxo completo)
 
-### Diferenciais (Opcionais):
+**Opcionais:**
 
-- ⏭️ **Advanced Search**: Interceptação de API de autocomplete (skipped - API não disponível)
-- ✅ **Account Creation**: Criação de conta com tratamento de CAPTCHA
-- ✅ **Random Product**: Seleção aleatória de produto do catálogo masculino
-- ✅ **Product Review**: Adicionar avaliação em produto
+- Account Creation (com tratamento de CAPTCHA)
+- Random Product (seleção aleatória do catálogo)
+- Product Review (adicionar avaliação)
+- Advanced Search (interceptação de API)
 
-## 🔧 Configuração
+## CI/CD
 
-O projeto está configurado para:
+Pipeline com 3 jobs:
 
-- **Base URL**: https://demo.hyva.io
-- **Navegadores**: Chromium, Firefox, WebKit
-- **Relatórios**: HTML e JUnit XML
-- **Screenshots**: Apenas em falhas
-- **Vídeos**: Retidos apenas em falhas
-- **Traces**: Retidos apenas em falhas
-- **Paralelização**: 4 workers
+1. **Prettier** - Validação de formatação
+2. **ESLint** - Validação de código
+3. **Playwright Tests** - Execução dos testes (Chromium)
 
-## 📊 Geração de Dados de Teste
+Triggers: push e pull requests na branch `main`
 
-O projeto utiliza a API [randomuser.me](https://randomuser.me) para gerar dados realistas de teste. Em caso de indisponibilidade da API, o sistema utiliza dados de fallback automaticamente, garantindo que os testes sempre possam ser executados.
+## Dados de Teste
 
-## 🏗️ Padrões de Design
-
-### Page Object Model (POM)
-
-Cada página da aplicação é representada por uma classe que encapsula:
-
-- **Localizadores**: Seletores de elementos
-- **Ações**: Métodos para interagir com a página
-- **Validações**: Verificações específicas da página
-
-**Benefícios:**
-
-- Reduz duplicação de código
-- Facilita manutenção quando a UI muda
-- Melhora legibilidade dos testes
-- Promove reutilização
-
-## 📈 Relatórios
-
-Os testes geram automaticamente:
-
-- **HTML Report**: Relatório visual com screenshots e vídeos de falhas
-- **JUnit XML**: Para integração com CI/CD
-- **Traces**: Para debugging detalhado com Playwright Trace Viewer
-
-## 🤝 Contribuindo
-
-Este é um projeto de desafio técnico. Para sugestões ou melhorias, abra uma issue.
-
-## 📝 Licença
-
-Este projeto foi desenvolvido como parte de um desafio técnico para QA.
+Utiliza API [randomuser.me](https://randomuser.me) com fallback automático para garantir execução dos testes.
 
 ---
 
-**Desenvolvido como parte do desafio técnico Coodesh**
+**Desenvolvido por Eduardo Esplinio para o desafio técnico Coodesh**
