@@ -3,7 +3,7 @@ export async function retry<T>(
   options: { maxAttempts?: number; delay?: number } = {}
 ): Promise<T> {
   const { maxAttempts = 3, delay = 1000 } = options;
-  
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
@@ -15,7 +15,7 @@ export async function retry<T>(
       await wait(delay * attempt);
     }
   }
-  
+
   throw new Error('Retry failed');
 }
 
@@ -23,7 +23,12 @@ export async function wait(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function validateUserData(data: any): boolean {
+export function validateUserData(data: {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+}): boolean {
   return !!(
     data.firstName &&
     data.lastName &&
@@ -34,7 +39,16 @@ export function validateUserData(data: any): boolean {
   );
 }
 
-export function validateAddressData(data: any): boolean {
+export function validateAddressData(data: {
+  firstName?: string;
+  lastName?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  country?: string;
+  phone?: string;
+}): boolean {
   return !!(
     data.firstName &&
     data.lastName &&

@@ -7,7 +7,14 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:eslint:fix": "eslint . --fix",
+    "lint:prettier": "prettier --check .",
+    "lint:prettier:fix": "prettier --write .",
+    "format": "npm run lint:eslint:fix && npm run lint:prettier:fix",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -25,6 +32,18 @@
     "@executeautomation/playwright-mcp-server": "^1.0.12",
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.55.0",
+    "@typescript-eslint/parser": "^8.55.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-playwright": "^2.5.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

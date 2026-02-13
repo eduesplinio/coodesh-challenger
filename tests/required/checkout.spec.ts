@@ -11,32 +11,32 @@ test.describe('Checkout', () => {
     const productPage = new ProductPage(page);
     const cartPage = new CartPage(page);
     const checkoutPage = new CheckoutPage(page);
-    
+
     await homePage.goto();
     await homePage.search('shirt');
-    
+
     await expect(page).toHaveURL(/catalogsearch\/result/);
-    
+
     const firstProduct = page.locator('.product-item a').first();
     await firstProduct.click();
-    
+
     await page.waitForLoadState('networkidle');
-    
+
     await productPage.selectSize(0);
     await productPage.selectColor(0);
-    
+
     await productPage.addToCart();
-    
+
     const cartCount = await cartPage.getCartCount();
     expect(cartCount).toBeGreaterThan(0);
-    
+
     await cartPage.goto();
     await cartPage.proceedToCheckout();
-    
+
     await expect(page).toHaveURL(/checkout/);
-    
+
     const addressData = await TestDataGenerator.generateAddressData();
-    
+
     await checkoutPage.fillShippingAddress({
       email: `test${Date.now()}@test.com`,
       firstName: addressData.firstName,
@@ -46,11 +46,11 @@ test.describe('Checkout', () => {
       state: addressData.state,
       zip: addressData.zip,
       country: addressData.country,
-      phone: addressData.phone
+      phone: addressData.phone,
     });
-    
+
     await checkoutPage.selectShippingMethod();
-    
+
     await expect(checkoutPage.placeOrderButton).toBeVisible();
   });
 });

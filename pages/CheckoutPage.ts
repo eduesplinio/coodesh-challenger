@@ -52,14 +52,14 @@ export class CheckoutPage {
     await this.cityInput.fill(data.city);
     await this.zipInput.fill(data.zip);
     await this.phoneInput.fill(data.phone);
-    
-    if (data.country && await this.countrySelect.isVisible()) {
+
+    if (data.country && (await this.countrySelect.isVisible())) {
       await this.countrySelect.selectOption(data.country);
     }
-    if (data.state && await this.stateSelect.isVisible()) {
+    if (data.state && (await this.stateSelect.isVisible())) {
       await this.stateSelect.selectOption({ label: data.state });
     }
-    
+
     await this.page.waitForLoadState('domcontentloaded');
   }
 

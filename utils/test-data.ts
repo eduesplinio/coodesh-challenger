@@ -20,34 +20,40 @@ export interface AddressData {
 }
 
 export class TestDataGenerator {
-  private static cache: Map<string, any> = new Map();
+  private static cache: Map<string, UserData | AddressData> = new Map();
 
   static async generateUserData(): Promise<UserData> {
     if (this.cache.has('userData')) {
-      return this.cache.get('userData');
+      return this.cache.get('userData') as UserData;
     }
 
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
+
       const response = await fetch('https://randomuser.me/api/', {
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`API returned ${response.status}`);
       }
-      
-      const data: any = await response.json();
-      
+
+      const data = (await response.json()) as {
+        results?: Array<{
+          name: { first: string; last: string };
+          login: { username: string };
+          phone: string;
+        }>;
+      };
+
       if (!data.results || data.results.length === 0) {
         console.warn('API returned empty results, using fallback');
         return this.getFallbackUserData();
       }
-      
+
       const user = data.results[0];
 
       const userData: UserData = {
@@ -60,45 +66,58 @@ export class TestDataGenerator {
 
       this.cache.set('userData', userData);
       console.log('Successfully generated user data from API');
-      
+
       if (!validateUserData(userData)) {
         console.warn('Generated user data failed validation, using fallback');
         return this.getFallbackUserData();
       }
-      
+
       return userData;
     } catch (error) {
-      console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.warn(
+        `Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return this.getFallbackUserData();
     }
   }
 
   static async generateAddressData(): Promise<AddressData> {
     if (this.cache.has('addressData')) {
-      return this.cache.get('addressData');
+      return this.cache.get('addressData') as AddressData;
     }
 
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
+
       const response = await fetch('https://randomuser.me/api/', {
-        signal: controller.signal
+        signal: controller.signal,
       });
-      
+
       clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
         throw new Error(`API returned ${response.status}`);
       }
-      
-      const data: any = await response.json();
-      
+
+      const data = (await response.json()) as {
+        results?: Array<{
+          name: { first: string; last: string };
+          location: {
+            street: { number: number; name: string };
+            city: string;
+            state: string;
+            postcode: string | number;
+          };
+          phone: string;
+        }>;
+      };
+
       if (!data.results || data.results.length === 0) {
         console.warn('API returned empty results, using fallback');
         return this.getFallbackAddressData();
       }
-      
+
       const user = data.results[0];
 
       const addressData: AddressData = {
@@ -114,33 +133,33 @@ export class TestDataGenerator {
 
       this.cache.set('addressData', addressData);
       console.log('Successfully generated address data from API');
-      
+
       if (!validateAddressData(addressData)) {
         console.warn('Generated address data failed validation, using fallback');
         return this.getFallbackAddressData();
       }
-      
+
       return addressData;
     } catch (error) {
-      console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.warn(
+        `Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return this.getFallbackAddressData();
     }
   }
 
   private static getFallbackUserData(): UserData {
-    const timestamp = Date.now();
     console.log('Using fallback user data');
     return {
       firstName: 'Test',
       lastName: 'User',
-      email: `testuser${timestamp}@test.com`,
+      email: `testuser${Date.now()}@test.com`,
       password: 'Test@123456',
       phone: '5551234567',
     };
   }
 
   private static getFallbackAddressData(): AddressData {
-    const timestamp = Date.now();
     console.log('Using fallback address data');
     return {
       firstName: 'Test',

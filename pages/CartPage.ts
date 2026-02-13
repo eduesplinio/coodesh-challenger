@@ -45,13 +45,13 @@ export class CartPage {
   async getCartItemDetails() {
     const items = await this.cartItems.all();
     const details = [];
-    
+
     for (const item of items) {
       const name = await item.locator('.product-item-name').textContent();
       const price = await item.locator('.price').textContent();
       details.push({ name: name?.trim(), price: price?.trim() });
     }
-    
+
     return details;
   }
 }

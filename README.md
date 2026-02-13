@@ -30,18 +30,21 @@ Este projeto implementa testes automatizados para validar funcionalidades críti
 ### Comparação com outras ferramentas:
 
 **Selenium:**
+
 - ❌ Requer configuração manual de drivers
 - ❌ Waits explícitos necessários
 - ❌ Sem interceptação de rede nativa
 - ✅ Mais maduro e amplamente adotado
 
 **Cypress:**
+
 - ❌ Limitado ao navegador (sem Firefox/Safari real)
 - ❌ Não suporta múltiplas abas/janelas nativamente
 - ❌ Execução apenas no navegador
 - ✅ Excelente DX e debugging
 
 **Robot Framework:**
+
 - ❌ Sintaxe menos familiar para desenvolvedores
 - ❌ Menos performático
 - ✅ Ótimo para testes de aceitação com stakeholders não-técnicos
@@ -108,12 +111,14 @@ npx playwright show-report
 ## ✅ Casos de Teste Implementados
 
 ### Obrigatórios:
+
 - ✅ **Home Page**: Validação de carregamento (< 10s), título, menu, busca e categorias
 - ✅ **Search**: Busca por "shirt" com validação de resultados e estrutura de produtos
 - ✅ **Cart**: Adicionar produto ao carrinho com validação de contador e itens
 - ✅ **Checkout**: Fluxo completo com preenchimento de formulário e seleção de método de envio
 
 ### Diferenciais (Opcionais):
+
 - ⏭️ **Advanced Search**: Interceptação de API de autocomplete (skipped - API não disponível)
 - ✅ **Account Creation**: Criação de conta com tratamento de CAPTCHA
 - ✅ **Random Product**: Seleção aleatória de produto do catálogo masculino
@@ -122,6 +127,7 @@ npx playwright show-report
 ## 🔧 Configuração
 
 O projeto está configurado para:
+
 - **Base URL**: https://demo.hyva.io
 - **Navegadores**: Chromium, Firefox, WebKit
 - **Relatórios**: HTML e JUnit XML
@@ -139,11 +145,13 @@ O projeto utiliza a API [randomuser.me](https://randomuser.me) para gerar dados 
 ### Page Object Model (POM)
 
 Cada página da aplicação é representada por uma classe que encapsula:
+
 - **Localizadores**: Seletores de elementos
 - **Ações**: Métodos para interagir com a página
 - **Validações**: Verificações específicas da página
 
 **Benefícios:**
+
 - Reduz duplicação de código
 - Facilita manutenção quando a UI muda
 - Melhora legibilidade dos testes
@@ -152,6 +160,7 @@ Cada página da aplicação é representada por uma classe que encapsula:
 ## 📈 Relatórios
 
 Os testes geram automaticamente:
+
 - **HTML Report**: Relatório visual com screenshots e vídeos de falhas
 - **JUnit XML**: Para integração com CI/CD
 - **Traces**: Para debugging detalhado com Playwright Trace Viewer
