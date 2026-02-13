@@ -69,12 +69,18 @@ export class ProductPage {
     return await this.successMessage.isVisible();
   }
 
-  async hasReviewSection() {
-    return await this.reviewSection.isVisible();
+  async hasSizeOptions() {
+    const count = await this.sizeOptions.count();
+    return count > 0;
   }
 
-  async getSuccessMessage() {
-    return await this.successMessage.textContent();
+  async hasColorOptions() {
+    const allSwatches = await this.page.locator('.swatch-option').all();
+    return allSwatches.length > 5;
+  }
+
+  async hasReviewSection() {
+    return await this.reviewSection.isVisible();
   }
 
   async waitForSuccessMessage(timeout: number = 5000) {

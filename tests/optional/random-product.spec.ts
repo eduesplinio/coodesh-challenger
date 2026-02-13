@@ -17,13 +17,12 @@ test.describe('Random Product Selection', () => {
     
     await catalogPage.selectRandomProduct();
     
-    const hasSizes = await page.locator('.swatch-option').count() > 0;
-    if (hasSizes) {
+    if (await productPage.hasSizeOptions()) {
       await productPage.selectRandomSize();
-      const hasColors = await page.locator('.swatch-option').count() > 5;
-      if (hasColors) {
-        await productPage.selectRandomColor();
-      }
+    }
+    
+    if (await productPage.hasColorOptions()) {
+      await productPage.selectRandomColor();
     }
     
     await productPage.addToCart();

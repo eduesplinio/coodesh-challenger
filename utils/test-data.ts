@@ -1,3 +1,5 @@
+import { validateUserData, validateAddressData } from './helpers';
+
 export interface UserData {
   firstName: string;
   lastName: string;
@@ -58,6 +60,12 @@ export class TestDataGenerator {
 
       this.cache.set('userData', userData);
       console.log('Successfully generated user data from API');
+      
+      if (!validateUserData(userData)) {
+        console.warn('Generated user data failed validation, using fallback');
+        return this.getFallbackUserData();
+      }
+      
       return userData;
     } catch (error) {
       console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -106,6 +114,12 @@ export class TestDataGenerator {
 
       this.cache.set('addressData', addressData);
       console.log('Successfully generated address data from API');
+      
+      if (!validateAddressData(addressData)) {
+        console.warn('Generated address data failed validation, using fallback');
+        return this.getFallbackAddressData();
+      }
+      
       return addressData;
     } catch (error) {
       console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);

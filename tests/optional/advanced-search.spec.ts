@@ -1,22 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
+import { HomePage } from '../../pages';
 
 test.describe('Advanced Search with API Monitoring', () => {
   test('should intercept autocomplete API and click last suggestion', async ({ page }) => {
     const homePage = new HomePage(page);
     
-    let apiCalled = false;
     let apiStatus = 0;
-    
-    await page.route('**/*', async (route) => {
-      const url = route.request().url();
-      if (url.includes('search') && url.includes('suggest')) {
-        apiCalled = true;
-        const response = await route.fetch();
-        apiStatus = response.status();
-      }
-      await route.continue();
-    });
     
     await homePage.goto();
     
@@ -25,9 +14,13 @@ test.describe('Advanced Search with API Monitoring', () => {
     
     await homePage.typeSearch('shirt');
     
-    await page.waitForTimeout(2000);
-    
-    if (!apiCalled) {
+    try {
+      const response = await page.waitForResponse(
+        resp => resp.url().includes('search') && resp.url().includes('suggest'),
+        { timeout: 3000 }
+      );
+      apiStatus = response.status();
+    } catch {
       test.skip(true, 'Autocomplete API was not called - feature may not be available');
       return;
     }
