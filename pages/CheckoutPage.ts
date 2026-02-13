@@ -54,7 +54,6 @@ export class CheckoutPage {
     await this.zipInput.fill(data.zip);
     await this.phoneInput.fill(data.phone);
     
-    // Selecionar país e estado se necessário
     if (await this.countrySelect.isVisible()) {
       await this.countrySelect.selectOption(data.country);
     }
