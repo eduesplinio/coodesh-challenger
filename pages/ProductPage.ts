@@ -25,6 +25,7 @@ export class ProductPage {
     const allSwatches = await this.page.locator('.swatch-option').all();
     if (allSwatches.length > index) {
       await allSwatches[index].click();
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 
@@ -34,6 +35,7 @@ export class ProductPage {
     if (sizeCount > 0) {
       const randomIndex = Math.floor(Math.random() * sizeCount);
       await allSwatches[randomIndex].click();
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 
@@ -43,6 +45,7 @@ export class ProductPage {
     const colorIndex = colorStartIndex + index;
     if (allSwatches.length > colorIndex) {
       await allSwatches[colorIndex].click();
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 
@@ -53,6 +56,7 @@ export class ProductPage {
       const colorCount = allSwatches.length - colorStartIndex;
       const randomIndex = colorStartIndex + Math.floor(Math.random() * colorCount);
       await allSwatches[randomIndex].click();
+      await this.page.waitForLoadState('domcontentloaded');
     }
   }
 

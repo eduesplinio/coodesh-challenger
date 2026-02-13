@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { ProductPage } from '../pages/ProductPage';
+import { CartPage } from '../pages/CartPage';
 
 test.describe('Shopping Cart', () => {
   test('should add a product to cart', async ({ page }) => {
     const homePage = new HomePage(page);
     const productPage = new ProductPage(page);
+    const cartPage = new CartPage(page);
     
     await homePage.goto();
     await homePage.search('shirt');
@@ -18,13 +20,16 @@ test.describe('Shopping Cart', () => {
     await page.waitForLoadState('networkidle');
     
     await productPage.selectSize(0);
-    await page.waitForTimeout(300);
     await productPage.selectColor(0);
-    await page.waitForTimeout(300);
     
     await productPage.addToCart();
     
-    const cartCounter = page.locator('#menu-cart-icon span[x-text="summaryCount"]');
-    await expect(cartCounter).toBeVisible({ timeout: 10000 });
+    await page.waitForLoadState('domcontentloaded');
+    const cartCountAfter = await cartPage.getCartCount();
+    expect(cartCountAfter).toBeGreaterThan(0);
+    
+    await cartPage.goto();
+    const hasItems = await cartPage.hasItems();
+    expect(hasItems).toBeTruthy();
   });
 });

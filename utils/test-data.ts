@@ -26,8 +26,26 @@ export class TestDataGenerator {
     }
 
     try {
-      const response = await fetch('https://randomuser.me/api/');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('https://randomuser.me/api/', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+      
       const data: any = await response.json();
+      
+      if (!data.results || data.results.length === 0) {
+        console.warn('API returned empty results, using fallback');
+        return this.getFallbackUserData();
+      }
+      
       const user = data.results[0];
 
       const userData: UserData = {
@@ -35,13 +53,14 @@ export class TestDataGenerator {
         lastName: user.name.last,
         email: `${user.login.username}${Date.now()}@test.com`,
         password: 'Test@123456',
-        phone: user.phone.replace(/\D/g, '').slice(0, 10),
+        phone: user.phone.replace(/\D/g, '').slice(0, 10) || '5551234567',
       };
 
       this.cache.set('userData', userData);
+      console.log('Successfully generated user data from API');
       return userData;
     } catch (error) {
-      console.warn('Falha ao buscar dados da API, usando fallback');
+      console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return this.getFallbackUserData();
     }
   }
@@ -52,8 +71,26 @@ export class TestDataGenerator {
     }
 
     try {
-      const response = await fetch('https://randomuser.me/api/');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+      const response = await fetch('https://randomuser.me/api/', {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+      
       const data: any = await response.json();
+      
+      if (!data.results || data.results.length === 0) {
+        console.warn('API returned empty results, using fallback');
+        return this.getFallbackAddressData();
+      }
+      
       const user = data.results[0];
 
       const addressData: AddressData = {
@@ -62,21 +99,23 @@ export class TestDataGenerator {
         street: `${user.location.street.number} ${user.location.street.name}`,
         city: user.location.city,
         state: user.location.state,
-        zip: user.location.postcode.toString().slice(0, 5),
+        zip: user.location.postcode.toString().padStart(5, '0').slice(0, 5),
         country: 'US',
-        phone: user.phone.replace(/\D/g, '').slice(0, 10),
+        phone: user.phone.replace(/\D/g, '').slice(0, 10) || '5551234567',
       };
 
       this.cache.set('addressData', addressData);
+      console.log('Successfully generated address data from API');
       return addressData;
     } catch (error) {
-      console.warn('Falha ao buscar dados da API, usando fallback');
+      console.warn(`Failed to fetch from API: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return this.getFallbackAddressData();
     }
   }
 
   private static getFallbackUserData(): UserData {
     const timestamp = Date.now();
+    console.log('Using fallback user data');
     return {
       firstName: 'Test',
       lastName: 'User',
@@ -88,6 +127,7 @@ export class TestDataGenerator {
 
   private static getFallbackAddressData(): AddressData {
     const timestamp = Date.now();
+    console.log('Using fallback address data');
     return {
       firstName: 'Test',
       lastName: 'User',

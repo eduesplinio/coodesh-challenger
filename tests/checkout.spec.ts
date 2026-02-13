@@ -1,11 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { ProductPage } from '../pages/ProductPage';
+import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { TestDataGenerator } from '../utils/test-data';
 
 test.describe('Checkout', () => {
-  test('should navigate to checkout page', async ({ page }) => {
+  test('should complete checkout flow', async ({ page }) => {
     const homePage = new HomePage(page);
     const productPage = new ProductPage(page);
+    const cartPage = new CartPage(page);
+    const checkoutPage = new CheckoutPage(page);
     
     await homePage.goto();
     await homePage.search('shirt');
@@ -18,25 +23,34 @@ test.describe('Checkout', () => {
     await page.waitForLoadState('networkidle');
     
     await productPage.selectSize(0);
-    await page.waitForTimeout(300);
     await productPage.selectColor(0);
-    await page.waitForTimeout(300);
     
     await productPage.addToCart();
     
-    const cartCounter = page.locator('#menu-cart-icon span[x-text="summaryCount"]');
-    await expect(cartCounter).toBeVisible({ timeout: 10000 });
+    const cartCount = await cartPage.getCartCount();
+    expect(cartCount).toBeGreaterThan(0);
     
-    await page.goto('https://demo.hyva.io/checkout/cart');
-    
-    const checkoutButton = page.locator('[title="Proceed to Checkout"]');
-    await checkoutButton.click();
-    
-    await page.waitForLoadState('networkidle');
+    await cartPage.goto();
+    await cartPage.proceedToCheckout();
     
     await expect(page).toHaveURL(/checkout/);
     
-    const emailInput = page.locator('[name="email"]');
-    await expect(emailInput).toBeVisible();
+    const addressData = await TestDataGenerator.generateAddressData();
+    
+    await checkoutPage.fillShippingAddress({
+      email: `test${Date.now()}@test.com`,
+      firstName: addressData.firstName,
+      lastName: addressData.lastName,
+      street: addressData.street,
+      city: addressData.city,
+      state: addressData.state,
+      zip: addressData.zip,
+      country: addressData.country,
+      phone: addressData.phone
+    });
+    
+    await checkoutPage.selectShippingMethod();
+    
+    await expect(checkoutPage.placeOrderButton).toBeVisible();
   });
 });

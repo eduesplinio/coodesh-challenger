@@ -12,25 +12,23 @@ export class CheckoutPage {
   readonly countrySelect: Locator;
   readonly phoneInput: Locator;
   readonly shippingMethodRadio: Locator;
-  readonly nextButton: Locator;
   readonly placeOrderButton: Locator;
   readonly orderNumber: Locator;
   readonly successMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('#customer-email');
-    this.firstNameInput = page.locator('input[name="firstname"]');
-    this.lastNameInput = page.locator('input[name="lastname"]');
-    this.streetInput = page.locator('input[name="street[0]"]');
-    this.cityInput = page.locator('input[name="city"]');
-    this.stateSelect = page.locator('select[name="region_id"]');
-    this.zipInput = page.locator('input[name="postcode"]');
-    this.countrySelect = page.locator('select[name="country_id"]');
-    this.phoneInput = page.locator('input[name="telephone"]');
-    this.shippingMethodRadio = page.locator('input[type="radio"][name="ko_unique_1"]').first();
-    this.nextButton = page.locator('button.continue');
-    this.placeOrderButton = page.locator('button.checkout');
+    this.emailInput = page.locator('[name="email"]');
+    this.firstNameInput = page.locator('[name="firstname"]');
+    this.lastNameInput = page.locator('[name="lastname"]');
+    this.streetInput = page.locator('[name="street[0]"]');
+    this.cityInput = page.locator('[name="city"]');
+    this.stateSelect = page.locator('[name="region_id"]');
+    this.zipInput = page.locator('[name="postcode"]');
+    this.countrySelect = page.locator('[name="country_id"]');
+    this.phoneInput = page.locator('[name="telephone"]');
+    this.shippingMethodRadio = page.locator('input[type="radio"][name*="shipping"]').first();
+    this.placeOrderButton = page.locator('.btn-place-order');
     this.orderNumber = page.locator('.checkout-success .order-number');
     this.successMessage = page.locator('.checkout-success');
   }
@@ -41,11 +39,12 @@ export class CheckoutPage {
     lastName: string;
     street: string;
     city: string;
-    state: string;
+    state?: string;
     zip: string;
-    country: string;
+    country?: string;
     phone: string;
   }) {
+    await this.emailInput.waitFor({ state: 'visible' });
     await this.emailInput.fill(data.email);
     await this.firstNameInput.fill(data.firstName);
     await this.lastNameInput.fill(data.lastName);
@@ -54,31 +53,37 @@ export class CheckoutPage {
     await this.zipInput.fill(data.zip);
     await this.phoneInput.fill(data.phone);
     
-    if (await this.countrySelect.isVisible()) {
+    if (data.country && await this.countrySelect.isVisible()) {
       await this.countrySelect.selectOption(data.country);
     }
-    if (await this.stateSelect.isVisible()) {
+    if (data.state && await this.stateSelect.isVisible()) {
       await this.stateSelect.selectOption({ label: data.state });
     }
+    
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async selectShippingMethod() {
+    await this.shippingMethodRadio.waitFor({ state: 'visible' });
     await this.shippingMethodRadio.check();
-  }
-
-  async clickNext() {
-    await this.nextButton.click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async placeOrder() {
+    await this.placeOrderButton.waitFor({ state: 'visible' });
     await this.placeOrderButton.click();
   }
 
-  async isOrderConfirmed() {
-    return await this.successMessage.isVisible();
+  async isOrderConfirmed(): Promise<boolean> {
+    try {
+      await this.successMessage.waitFor({ state: 'visible', timeout: 15000 });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  async getOrderNumber() {
+  async getOrderNumber(): Promise<string | null> {
     return await this.orderNumber.textContent();
   }
 }

@@ -13,6 +13,13 @@ playwright/.cache/
 # Kiro
 .kiro/
 
+# Screenshots and media
+*.png
+*.jpg
+*.jpeg
+*.webm
+*.zip
+
 # OS
 .DS_Store
 Thumbs.db
