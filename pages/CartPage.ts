@@ -10,8 +10,8 @@ export class CartPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.cartIcon = page.locator('.showcart');
-    this.cartCounter = page.locator('.counter-number');
+    this.cartIcon = page.locator('#menu-cart-icon');
+    this.cartCounter = page.locator('#menu-cart-icon + span');
     this.cartItems = page.locator('.product-item');
     this.proceedToCheckoutButton = page.locator('#top-cart-btn-checkout');
     this.miniCart = page.locator('#ui-id-1');

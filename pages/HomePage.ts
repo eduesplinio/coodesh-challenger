@@ -9,10 +9,10 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.searchInput = page.locator('#search');
+    this.searchInput = page.locator('input[name="q"]');
     this.searchButton = page.locator('button[type="submit"]').first();
     this.searchSuggestions = page.locator('#search_autocomplete li');
-    this.navigationMenu = page.locator('nav.navigation');
+    this.navigationMenu = page.locator('div.navigation');
   }
 
   async goto() {
@@ -20,8 +20,10 @@ export class HomePage {
   }
 
   async search(term: string) {
+    const searchButton = this.page.locator('#menu-search-icon');
+    await searchButton.click();
     await this.searchInput.fill(term);
-    await this.searchButton.click();
+    await this.page.locator('button[type="submit"]').first().click();
   }
 
   async typeSearch(term: string) {

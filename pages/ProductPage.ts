@@ -13,8 +13,8 @@ export class ProductPage {
   constructor(page: Page) {
     this.page = page;
     this.productName = page.locator('.page-title');
-    this.sizeOptions = page.locator('.swatch-option.text');
-    this.colorOptions = page.locator('.swatch-option.color');
+    this.sizeOptions = page.locator('.swatch-option');
+    this.colorOptions = page.locator('.swatch-option');
     this.addToCartButton = page.locator('#product-addtocart-button');
     this.successMessage = page.locator('[role="alert"]');
     this.reviewSection = page.locator('#reviews');
@@ -22,40 +22,42 @@ export class ProductPage {
   }
 
   async selectSize(index: number = 0) {
-    const sizes = this.sizeOptions;
-    const count = await sizes.count();
-    if (count > 0) {
-      await sizes.nth(index).click();
+    const allSwatches = await this.page.locator('.swatch-option').all();
+    if (allSwatches.length > index) {
+      await allSwatches[index].click();
     }
   }
 
   async selectRandomSize() {
-    const sizes = this.sizeOptions;
-    const count = await sizes.count();
-    if (count > 0) {
-      const randomIndex = Math.floor(Math.random() * count);
-      await sizes.nth(randomIndex).click();
+    const allSwatches = await this.page.locator('.swatch-option').all();
+    const sizeCount = Math.min(5, allSwatches.length);
+    if (sizeCount > 0) {
+      const randomIndex = Math.floor(Math.random() * sizeCount);
+      await allSwatches[randomIndex].click();
     }
   }
 
   async selectColor(index: number = 0) {
-    const colors = this.colorOptions;
-    const count = await colors.count();
-    if (count > 0) {
-      await colors.nth(index).click();
+    const allSwatches = await this.page.locator('.swatch-option').all();
+    const colorStartIndex = 5;
+    const colorIndex = colorStartIndex + index;
+    if (allSwatches.length > colorIndex) {
+      await allSwatches[colorIndex].click();
     }
   }
 
   async selectRandomColor() {
-    const colors = this.colorOptions;
-    const count = await colors.count();
-    if (count > 0) {
-      const randomIndex = Math.floor(Math.random() * count);
-      await colors.nth(randomIndex).click();
+    const allSwatches = await this.page.locator('.swatch-option').all();
+    const colorStartIndex = 5;
+    if (allSwatches.length > colorStartIndex) {
+      const colorCount = allSwatches.length - colorStartIndex;
+      const randomIndex = colorStartIndex + Math.floor(Math.random() * colorCount);
+      await allSwatches[randomIndex].click();
     }
   }
 
   async addToCart() {
+    await this.addToCartButton.waitFor({ state: 'visible', timeout: 10000 });
     await this.addToCartButton.click();
   }
 
