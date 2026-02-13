@@ -95,6 +95,10 @@ npx playwright show-report
 │   │   ├── cart.spec.ts
 │   │   └── checkout.spec.ts
 │   └── optional/          # Testes diferenciais
+│       ├── advanced-search.spec.ts
+│       ├── account.spec.ts
+│       ├── random-product.spec.ts
+│       └── review.spec.ts
 ├── utils/                 # Utilitários
 │   └── test-data.ts      # Gerador de dados de teste
 ├── playwright.config.ts
@@ -110,10 +114,10 @@ npx playwright show-report
 - ✅ **Checkout**: Fluxo completo com preenchimento de formulário e seleção de método de envio
 
 ### Diferenciais (Opcionais):
-- ⏳ Busca avançada com interceptação de API
-- ⏳ Criação de conta com tratamento de CAPTCHA
-- ⏳ Seleção aleatória de produto do catálogo
-- ⏳ Adicionar avaliação em produto
+- ⏭️ **Advanced Search**: Interceptação de API de autocomplete (skipped - API não disponível)
+- ✅ **Account Creation**: Criação de conta com tratamento de CAPTCHA
+- ✅ **Random Product**: Seleção aleatória de produto do catálogo masculino
+- ✅ **Product Review**: Adicionar avaliação em produto
 
 ## 🔧 Configuração
 
