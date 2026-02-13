@@ -72,4 +72,13 @@ export class ProductPage {
   async hasReviewSection() {
     return await this.reviewSection.isVisible();
   }
+
+  async getSuccessMessage() {
+    return await this.successMessage.textContent();
+  }
+
+  async waitForSuccessMessage(timeout: number = 5000) {
+    await this.successMessage.waitFor({ state: 'visible', timeout });
+    return await this.isAddedToCart();
+  }
 }

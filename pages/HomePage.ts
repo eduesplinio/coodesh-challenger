@@ -46,4 +46,14 @@ export class HomePage {
   async isLoaded() {
     return await this.navigationMenu.isVisible();
   }
+
+  async navigateToMenCategory() {
+    await this.page.locator('div.navigation a:has-text("Men")').first().click();
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  async navigateToWomenCategory() {
+    await this.page.locator('div.navigation a:has-text("Women")').first().click();
+    await this.page.waitForLoadState('networkidle');
+  }
 }

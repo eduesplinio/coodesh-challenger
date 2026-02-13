@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
-import { ProductPage } from '../../pages/ProductPage';
-import { CartPage } from '../../pages/CartPage';
+import { HomePage, ProductPage, CartPage } from '../../pages';
 
 test.describe('Shopping Cart', () => {
   test('should add a product to cart', async ({ page }) => {
@@ -24,7 +22,9 @@ test.describe('Shopping Cart', () => {
     
     await productPage.addToCart();
     
-    await page.waitForLoadState('domcontentloaded');
+    const isAdded = await productPage.waitForSuccessMessage();
+    expect(isAdded).toBe(true);
+    
     const cartCountAfter = await cartPage.getCartCount();
     expect(cartCountAfter).toBeGreaterThan(0);
     

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
+import { HomePage } from '../../pages';
 
 test.describe('Product Search', () => {
   test('should search for "shirt" and display results', async ({ page }) => {

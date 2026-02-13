@@ -1,27 +1,21 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
-import { ProductPage } from '../../pages/ProductPage';
-import { CartPage } from '../../pages/CartPage';
+import { HomePage, ProductPage, CartPage, CatalogPage } from '../../pages';
 
 test.describe('Random Product Selection', () => {
   test('should add a random product from men catalog to cart', async ({ page }) => {
     const homePage = new HomePage(page);
     const productPage = new ProductPage(page);
     const cartPage = new CartPage(page);
+    const catalogPage = new CatalogPage(page);
     
     await homePage.goto();
+    await homePage.navigateToMenCategory();
     
-    await page.locator('div.navigation a:has-text("Men")').first().click();
-    await page.waitForLoadState('networkidle');
-    
-    const products = page.locator('.product-item a.product-item-link');
-    const productCount = await products.count();
+    expect(await catalogPage.hasProducts()).toBe(true);
+    const productCount = await catalogPage.getProductCount();
     expect(productCount).toBeGreaterThan(0);
     
-    const randomIndex = Math.floor(Math.random() * productCount);
-    await products.nth(randomIndex).click();
-    
-    await page.waitForLoadState('networkidle');
+    await catalogPage.selectRandomProduct();
     
     const hasSizes = await page.locator('.swatch-option').count() > 0;
     if (hasSizes) {
@@ -33,6 +27,9 @@ test.describe('Random Product Selection', () => {
     }
     
     await productPage.addToCart();
+    
+    const isAdded = await productPage.waitForSuccessMessage();
+    expect(isAdded).toBe(true);
     
     const cartCount = await cartPage.getCartCount();
     expect(cartCount).toBeGreaterThan(0);

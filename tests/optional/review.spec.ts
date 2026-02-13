@@ -1,19 +1,15 @@
 import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
-import { ProductPage } from '../../pages/ProductPage';
+import { HomePage, ProductPage, CatalogPage } from '../../pages';
 
 test.describe('Product Review', () => {
   test('should add a review to a product', async ({ page }) => {
     const homePage = new HomePage(page);
-    const productPage = new ProductPage(page);
+    const catalogPage = new CatalogPage(page);
     
     await homePage.goto();
+    await homePage.navigateToMenCategory();
     
-    await page.locator('div.navigation a:has-text("Men")').first().click();
-    await page.waitForLoadState('networkidle');
-    
-    await page.locator('.product-item a.product-item-link').first().click();
-    await page.waitForLoadState('networkidle');
+    await catalogPage.selectFirstProduct();
     
     const reviewForm = page.locator('#review_form');
     await reviewForm.scrollIntoViewIfNeeded();
